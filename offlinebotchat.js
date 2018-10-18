@@ -8481,24 +8481,23 @@ var DirectLine = /** @class */ (function () {
                 method: "GET",
                 url: "activities.txt",
                 //url: _this.domain + "/conversations/" + _this.conversationId + "/activities?watermark=" + _this.watermark,
-                timeout: timeout,
-                headers: {
-                    "Accept": "application/json",
-                    "Authorization": "Bearer " + _this.token
-                }
+                timeout: timeout
             })
                 .catch(function (error) {
-                    console.log("error");
-                    console.log(error);
-                if (error.status === 403) {
-                    // This is slightly ugly. We want to update this.connectionStatus$ to ExpiredToken so that subsequent
-                    // calls to checkConnection will throw an error. But when we do so, it causes this.checkConnection()
-                    // to immediately throw an error, which is caught by the catch() below and transformed into an empty
-                    // object. Then next() returns, and we emit an empty object. Which means one 403 is causing
-                    // two empty objects to be emitted. Which is harmless but, again, slightly ugly.
-                    _this.expiredToken();
-                }
-                return Observable_1.Observable.empty();
+                return Observable_1.Observable.create(function(){
+                    var globalActivity={
+                        "activities": [],
+                        "watermark": "0"
+                    };
+                    try{
+                        globalActivity= DirectLineEmulator.getActivity();
+                    }
+                    catch(error){
+            
+                    }
+                    return globalActivity;
+                })
+            return Observable_1.Observable.empty();
             })
                 //          .do(ajaxResponse => konsole.log("getActivityGroup ajaxResponse", ajaxResponse))
                 .map(function (ajaxResponse) {

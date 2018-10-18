@@ -73,3 +73,5 @@ The activity needs to follow the format:
       }]};
 ```
 The sample **history.html** shows how you can populate the activities into the botcontrol from a transcript.
+
+You can test it here: http://lambot.blob.core.windows.net/github/WebChatControlOffline/index.html 
