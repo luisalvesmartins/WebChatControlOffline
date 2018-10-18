@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Offline Bot WebChat Control</title>
+    <link href="https://cdn.botframework.com/botframework-webchat/latest/botchat.css" rel="stylesheet" />
+    <script src="offlinebotchat.js"></script>
+
+    <style>
+      H2 {
+        font:18pt Verdana;
+      }
+      #BotChatGoesHere {
+        border: 1px solid #333;
+        float: left;
+        height: 400px;
+        position: relative;
+        width: 460px;
+        margin-right:20px;
+      }
+      #lastMessage{
+        font:8pt Verdana;
+        margin:10px;
+      }
+      #SideBar {
+        font:12pt Verdana;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Offline Bot WebChat Control</h2>
+
+    <div id="BotChatGoesHere"></div>
+    <div id="SideBar">
+      <button onclick="send()">Send Next Activity</button>
+    </div>
+
+    <script>
+      const user = {
+        id: 'Luis',
+        name: 'Luis'
+      };
+      const bot = {
+        id: 'botid',
+        name: 'botname'
+      };
+
+      BotChat.App({
+        bot: bot,
+        user: user,
+        botConnection: new BotChat.DirectLine({}),
+        //to disable user shell
+        //disabled:true
+      }, document.getElementById('BotChatGoesHere'));
+
+    var DirectLineEmulator={
+      emptyActivity:{
+          "activities": [],
+          "watermark": "0"
+      },
+      userActivity:function(activity){
+      //Every time the user sends an activity: 
+          console.log("USER ACTIVITY:")
+          console.log(activity);
+          
+          document.all("lastMessage").innerText=JSON.stringify(activity);
+      },
+      getActivity:function(activity){
+      //The bot polls this function every 1000ms, change activity to the message you want to display
+          console.log("ACTIVITY SENT")
+          return this.emptyActivity;
+      }
+    }
+
+    var historyIndex=0;
+    function send(){
+        DirectLineEmulator.emptyActivity={ activities:[hist[historyIndex++]]};
+    }
+
+var hist=[
+    {
+    "conversation": {
+      "id": "hash:contents"
+    },
+    "id": "2",
+    "recipient": {
+      "id": "hash:contents",
+      "name": "cafebot",
+      "role": "bot"
+    },
+    "from": {
+      "id": "hash:contents",
+      "name": "me",
+      "role": "user"
+    },
+    "text": "book a table",
+    "timestamp": "2018-10-18T17:06:04.100Z",
+    "type": "message",
+    "channelId": "chatdown"
+  },
+  {
+    "conversation": {
+      "id": "hash:contents"
+    },
+    "id": "3",
+    "recipient": {
+      "id": "hash:contents",
+      "name": "me",
+      "role": "user"
+    },
+    "from": {
+      "id": "hash:contents",
+      "name": "cafebot",
+      "role": "bot"
+    },
+    "text": "Did you have a location in mind?",
+    "timestamp": "2018-10-18T17:06:06.100Z",
+    "type": "message",
+    "channelId": "chatdown"
+  },
+  {
+    "attachments": [
+      {
+        "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {  "$schema": "https://microsoft.github.io/AdaptiveCards/schemas/adaptive-card.json",  "type": "AdaptiveCard",  "version": "1.0",  "body": [    {      "speak": "<s>Serious Pie is a Pizza restaurant which is rated 9.3 by customers.</s>",      "type": "ColumnSet",      "columns": [        {          "type": "Column",          "size": "2",          "items": [            {              "type": "TextBlock",              "text": "Contoso Cafe",              "weight": "bolder",              "size": "extraLarge"            }          ]        },        {          "type": "Column",          "size": "1",          "items": [            {              "type": "Image",              "url": "http://contososcubabot.azurewebsites.net/assets/steak.jpg",              "size": "auto"            }          ]        }      ]    },    {      "type": "TextBlock",      "text": "What city:"    },    {      "type": "Input.ChoiceSet",      "id": "cafeLocation",      "style": "compact",      "isMultiSelect": false,      "choices": [        {          "title": "Seattle",          "value": "seattle",          "isSelected": true        },        {          "title": "Redmond",          "value": "redmond"        },        {          "title": "Renton",          "value": "renton"        }      ]    }  ],  "actions": [    {      "type": "Action.Submit",      "title": "Ok"    }  ]}
+
+      }
+    ],
+    "conversation": {
+      "id": "hash:contents"
+    },
+    "id": "4",
+    "recipient": {
+      "id": "hash:contents",
+      "name": "me",
+      "role": "user"
+    },
+    "from": {
+      "id": "hash:contents",
+      "name": "cafebot",
+      "role": "bot"
+    },
+    "text": "",
+    "timestamp": "2018-10-18T17:06:08.100Z",
+    "type": "message",
+    "channelId": "chatdown"
+  },
+  {
+    "conversation": {
+      "id": "hash:contents"
+    },
+    "id": "5",
+    "recipient": {
+      "id": "hash:contents",
+      "name": "cafebot",
+      "role": "bot"
+    },
+    "from": {
+      "id": "hash:contents",
+      "name": "me",
+      "role": "user"
+    },
+    "text": "How about seattle?",
+    "timestamp": "2018-10-18T17:06:10.100Z",
+    "type": "message",
+    "channelId": "chatdown"
+  },
+    {
+    "attachments": [
+      {
+        "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {  "$schema": "https://microsoft.github.io/AdaptiveCards/schemas/adaptive-card.json",  "type": "AdaptiveCard",  "version": "1.0",  "body": [    {      "speak": "<s>Serious Pie is a Pizza restaurant which is rated 9.3 by customers.</s>",      "type": "ColumnSet",      "columns": [        {          "type": "Column",          "size": "2",          "items": [            {              "type": "TextBlock",              "text": "Contoso Cafe",              "weight": "bolder",              "size": "extraLarge"            }          ]        },        {          "type": "Column",          "size": "1",          "items": [            {              "type": "Image",              "url": "http://contososcubabot.azurewebsites.net/assets/steak.jpg",              "size": "auto"            }          ]        }      ]    },    {      "type": "TextBlock",      "text": "What city:"    },    {      "type": "Input.ChoiceSet",      "id": "cafeLocation",      "style": "compact",      "isMultiSelect": false,      "choices": [        {          "title": "Seattle",          "value": "seattle",          "isSelected": true        },        {          "title": "Redmond",          "value": "redmond"        },        {          "title": "Renton",          "value": "renton"        }      ]    }  ],  "actions": [    {      "type": "Action.Submit",      "title": "Ok"    }  ]}
+
+      }
+    ],
+    "conversation": {
+      "id": "hash:contents"
+    },
+    "id": "4",
+    "recipient": {
+      "id": "hash:contents",
+      "name": "me",
+      "role": "user"
+    },
+    "from": {
+      "id": "hash:contents",
+      "name": "cafebot",
+      "role": "bot"
+    },
+    "text": "",
+    "timestamp": "2018-10-18T17:06:08.100Z",
+    "type": "message",
+    "channelId": "chatdown"
+  },
+  {
+    "conversation": {
+      "id": "hash:contents"
+    },
+    "id": "6",
+    "recipient": {
+      "id": "hash:contents",
+      "name": "me",
+      "role": "user"
+    },
+    "from": {
+      "id": "hash:contents",
+      "name": "cafebot",
+      "role": "bot"
+    },
+    "text": "Did you have a date in mind?",
+    "timestamp": "2018-10-18T17:06:12.100Z",
+    "type": "message",
+    "channelId": "chatdown"
+  },
+  {
+    "conversation": {
+      "id": "hash:contents"
+    },
+    "id": "7",
+    "recipient": {
+      "id": "hash:contents",
+      "name": "cafebot",
+      "role": "bot"
+    },
+    "from": {
+      "id": "hash:contents",
+      "name": "me",
+      "role": "user"
+    },
+    "text": "tomorrow",
+    "timestamp": "2018-10-18T17:06:14.100Z",
+    "type": "message",
+    "channelId": "chatdown"
+  },
+  {
+    "conversation": {
+      "id": "hash:contents"
+    },
+    "id": "8",
+    "recipient": {
+      "id": "hash:contents",
+      "name": "me",
+      "role": "user"
+    },
+    "from": {
+      "id": "hash:contents",
+      "name": "cafebot",
+      "role": "bot"
+    },
+    "text": "What time?",
+    "timestamp": "2018-10-18T17:06:16.100Z",
+    "type": "message",
+    "channelId": "chatdown"
+  },
+  {
+    "conversation": {
+      "id": "hash:contents"
+    },
+    "id": "9",
+    "recipient": {
+      "id": "hash:contents",
+      "name": "cafebot",
+      "role": "bot"
+    },
+    "from": {
+      "id": "hash:contents",
+      "name": "me",
+      "role": "user"
+    },
+    "text": "3PM",
+    "timestamp": "2018-10-18T17:06:18.100Z",
+    "type": "message",
+    "channelId": "chatdown"
+  },
+  {
+    "conversation": {
+      "id": "hash:contents"
+    },
+    "id": "10",
+    "recipient": {
+      "id": "hash:contents",
+      "name": "me",
+      "role": "user"
+    },
+    "from": {
+      "id": "hash:contents",
+      "name": "cafebot",
+      "role": "bot"
+    },
+    "text": "How many guests?",
+    "timestamp": "2018-10-18T17:06:20.100Z",
+    "type": "message",
+    "channelId": "chatdown"
+  },
+  {
+    "conversation": {
+      "id": "hash:contents"
+    },
+    "id": "11",
+    "recipient": {
+      "id": "hash:contents",
+      "name": "cafebot",
+      "role": "bot"
+    },
+    "from": {
+      "id": "hash:contents",
+      "name": "me",
+      "role": "user"
+    },
+    "text": "3",
+    "timestamp": "2018-10-18T17:06:22.100Z",
+    "type": "message",
+    "channelId": "chatdown"
+  },
+  {
+    "conversation": {
+      "id": "hash:contents"
+    },
+    "id": "12",
+    "recipient": {
+      "id": "hash:contents",
+      "name": "me",
+      "role": "user"
+    },
+    "from": {
+      "id": "hash:contents",
+      "name": "cafebot",
+      "role": "bot"
+    },
+    "text": "Ok. Should I go ahead and book a table for 3 at seattle for tomorrow at 3PM?",
+    "timestamp": "2018-10-18T17:06:24.100Z",
+    "type": "message",
+    "channelId": "chatdown"
+  },
+  {
+    "attachments": [
+      {
+        "contentType": "application/vnd.microsoft.card.adaptive",
+        "content": {  "$schema": "https://microsoft.github.io/AdaptiveCards/schemas/adaptive-card.json",  "type": "AdaptiveCard",  "version": "1.0",  "body": [    {      "speak": "<s>Serious Pie is a Pizza restaurant which is rated 9.3 by customers.</s>",      "type": "ColumnSet",      "columns": [        {          "type": "Column",          "size": "2",          "items": [            {              "type": "TextBlock",              "text": "Contoso Cafe",              "weight": "bolder",              "size": "extraLarge"            },            {              "type": "TextBlock",              "text": "Book a table",              "wrap": true            }          ]        },        {          "type": "Column",          "size": "1",          "items": [            {              "type": "Image",              "url": "http://contososcubabot.azurewebsites.net/assets/steak.jpg",              "size": "auto"            }          ]        }      ]    },    {      "type": "TextBlock",      "text": "Location:"    },    {      "type": "Input.Text",      "value": "Seattle",      "style": "text",      "maxLength": 0,      "id": "cafeLocation",      "speak": "Select a Location"    },    {      "type": "TextBlock",      "text": "Event date:"    },    {      "type": "Input.Text",      "value": "Tomorrow",      "id": "builtin.datetime.date",      "speak": "What event time?"    },    {      "type": "TextBlock",      "text": "Event time:"    },    {      "type": "Input.Text",      "value": "3PM",      "id": "builtin.datetime.time",      "speak": "What event time?"    },    {      "type": "TextBlock",      "text": "Party size:"    },    {      "type": "Input.Text",      "value": "3",      "id": "partySize",      "speak": "What time to start?"    }  ],  "actions": [    {      "type": "Action.Submit",      "title": "Book it",      "data": {        "confirmationList": "yes"      }    },    {      "type": "Action.Http",      "method": "POST",      "title": "Book on opentable",      "url": "www.opentable.com/"    }  ]}
+      }
+    ],
+    "conversation": {
+      "id": "hash:contents"
+    },
+    "id": "13",
+    "recipient": {
+      "id": "hash:contents",
+      "name": "me",
+      "role": "user"
+    },
+    "from": {
+      "id": "hash:contents",
+      "name": "cafebot",
+      "role": "bot"
+    },
+    "text": "",
+    "timestamp": "2018-10-18T17:06:26.100Z",
+    "type": "message",
+    "channelId": "chatdown"
+  },
+  {
+    "conversation": {
+      "id": "hash:contents"
+    },
+    "id": "14",
+    "recipient": {
+      "id": "hash:contents",
+      "name": "cafebot",
+      "role": "bot"
+    },
+    "from": {
+      "id": "hash:contents",
+      "name": "me",
+      "role": "user"
+    },
+    "text": "yes",
+    "timestamp": "2018-10-18T17:06:28.100Z",
+    "type": "message",
+    "channelId": "chatdown"
+  },
+  {
+    "conversation": {
+      "id": "hash:contents"
+    },
+    "id": "16",
+    "recipient": {
+      "id": "hash:contents",
+      "name": "me",
+      "role": "user"
+    },
+    "from": {
+      "id": "hash:contents",
+      "name": "cafebot",
+      "role": "bot"
+    },
+    "timestamp": "2018-10-18T17:06:28.200Z",
+    "type": "typing",
+    "channelId": "chatdown"
+  },
+  {
+    "conversation": {
+      "id": "hash:contents"
+    },
+    "id": "15",
+    "recipient": {
+      "id": "hash:contents",
+      "name": "me",
+      "role": "user"
+    },
+    "from": {
+      "id": "hash:contents",
+      "name": "cafebot",
+      "role": "bot"
+    },
+    "text": "Your table is booked. Reference number: #K89HG38SZ",
+    "timestamp": "2018-10-18T17:06:31.200Z",
+    "type": "message",
+    "channelId": "chatdown"
+  }
+]
+
+      </script>
+  </body>
+</html>
