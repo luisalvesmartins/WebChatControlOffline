@@ -8393,7 +8393,13 @@ var DirectLine = /** @class */ (function () {
         //HARDCODED
         return this.checkConnection(true)
             .flatMap(function (_) {
-            return Observable_1.Observable.ajax({
+                return Observable_1.Observable.of(DirectLineEmulator.userActivity(activity))
+                .map(function(){
+                    DirectLineEmulator.userActivity(activity);
+                });
+                ;
+
+                return Observable_1.Observable.ajax({
                 method: "GET",
                 url: "activities.txt",
                 body: activity,
@@ -8477,6 +8483,14 @@ var DirectLine = /** @class */ (function () {
         return Observable_1.Observable.interval(this.pollingInterval)
             .combineLatest(this.checkConnection())
             .flatMap(function (_) {
+                return Observable_1.Observable.of(DirectLineEmulator.getActivity())
+                .map(function(){
+                    return DirectLineEmulator.getActivity();
+                })
+                .flatMap(function (activityGroup) { 
+                    return _this.observableFromActivityGroup(activityGroup); });
+                ;
+
             return Observable_1.Observable.ajax({
                 method: "GET",
                 url: "activities.txt",
