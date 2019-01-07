@@ -8395,9 +8395,13 @@ var DirectLine = /** @class */ (function () {
             .flatMap(function (_) {
                 return Observable_1.Observable.of(DirectLineEmulator.userActivity(activity))
                 .map(function(){
-                    DirectLineEmulator.userActivity(activity);
+                    try{
+                        DirectLineEmulator.userActivity(activity);
+                    }
+                    catch(error){
+                    }
+                    return "1"; 
                 });
-                ;
 
                 return Observable_1.Observable.ajax({
                 method: "GET",
