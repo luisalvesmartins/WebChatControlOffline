@@ -3,8 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Offline Bot WebChat Control</title>
-    <link href="https://cdn.botframework.com/botframework-webchat/latest/botchat.css" rel="stylesheet" />
+    <title>Offline Bot WebChat Control v4</title>
     <script src="offlinebotchatv4.js"></script>
 
     <style>
@@ -40,6 +39,7 @@
         <INPUT id="sendMessage"/>
         <button onclick="send()">Send</button>
       </div>
+      <button onclick="sendAdaptiveCard()">Send AdaptiveCard</button>
     </div>
 
     <script>
@@ -101,6 +101,105 @@
         "timestamp": (new Date()).toISOString(),
         "type": "message",
         "channelId": "asdas"
+      }]};
+      DirectLineEmulator.emptyActivity=message;
+    }
+
+    function sendAdaptiveCard(){
+      messageID++;
+      var adaptcard={
+  "type": "AdaptiveCard",
+  "body": [
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "ColumnSet",
+          "columns": [
+            {
+              "type": "Column",
+              "items": [
+                {
+                  "type": "Image",
+                  "style": "Person",
+                  "url": "https://thumbs.dreamstime.com/t/car-repair-d-vector-icon-isolated-white-background-47129778.jpg",
+                  "size": "Small"
+                }
+              ],
+              "width": "auto"
+            },
+            {
+              "type": "Column",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "horizontalAlignment": "Left",
+                  "size": "Medium",
+                  "weight": "Bolder",
+                  "text": "Car Order",
+                  "wrap": true
+                }
+              ],
+              "width": "stretch"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "FactSet",
+          "facts": [
+            {
+              "title": "Plate Number:",
+              "value": "AB12345"
+            },
+            {
+              "title": "Surname:",
+              "value": "Smith"
+            },
+            {
+              "title": "Name:",
+              "value": "John"
+            },
+            {
+              "title": "#label",
+              "value": "some label"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.0"
+};
+      var message={activities:[{
+        "conversation": {
+          "id": "something"
+        },
+        "id": messageID,
+        "from": {
+          "id": "something",
+          "name": "someone",
+          "role": "bot"
+        },
+        "recipient": {
+          "id": "something",
+          "name": "me",
+          "role": "user"
+        },
+        "timestamp": (new Date()).toISOString(),
+        "type": "message",
+        "channelId": "asdas",
+        "attachments": [
+        {
+            "contentType": "application/vnd.microsoft.card.adaptive",
+            "content": adaptcard
+            }
+          ]
       }]};
       DirectLineEmulator.emptyActivity=message;
     }

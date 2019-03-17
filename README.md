@@ -1,5 +1,5 @@
 # Offline Bot Web Chat Control
-Bot Framework Offline Web Chat Control
+Bot Framework Offline Web Chat Control for v3 and v4
 
 ## v3
 
