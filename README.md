@@ -1,6 +1,8 @@
 # Offline Bot Web Chat Control
 Bot Framework Offline Web Chat Control
 
+## v3
+
 This control enables the simulation of sending and receiving messages from the bot framework.
 It's an hack over the code from the BotFramework-WebChat (https://github.com/Microsoft/BotFramework-WebChat). It's an hack with the intent of enabling the development of tools and quick prototyping of bot conversations. 
 
@@ -75,3 +77,9 @@ The activity needs to follow the format:
 The sample **history.html** shows how you can populate the activities into the botcontrol from a transcript.
 
 You can test it here: http://lambot.blob.core.windows.net/github/WebChatControlOffline/index.html 
+
+## v4
+
+V4 Webchat control is created based on the botframework webchat control. Two files are changed before compilation: the directlinejs connector and the saga regarding activitypost.
+
+The compiled file with the changes is named offlinebotchatv4.js and can be found in the folder v4. A demo index.html is included.

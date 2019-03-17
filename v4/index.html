@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Offline Bot WebChat Control</title>
+    <link href="https://cdn.botframework.com/botframework-webchat/latest/botchat.css" rel="stylesheet" />
+    <script src="offlinebotchatv4.js"></script>
+
+    <style>
+      H2 {
+        font:18pt Verdana;
+      }
+      #lastMessage{
+        font:8pt Verdana;
+        margin:10px;
+      }
+      #SideBar {
+        font:12pt Verdana;
+      }
+      #BotChatGoesHere {
+        border: 1px solid #333;
+        float: left;
+        height: 400px;
+        position: relative;
+        width: 460px;
+        margin-right:20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Offline Bot WebChat Control</h2>
+
+    <div id="BotChatGoesHere"></div>
+    <div id="SideBar">
+      User Message:
+      <div id="lastMessage"></div>
+      Send Message:
+      <div>
+        <INPUT id="sendMessage"/>
+        <button onclick="send()">Send</button>
+      </div>
+    </div>
+
+    <script>
+      const user = {
+        id: 'Luis',
+        name: 'Luis'
+      };
+      const bot = {
+        id: 'botid',
+        name: 'botname'
+      };
+
+      window.WebChat.renderWebChat({
+          directLine: window.WebChat.createDirectLine({token:'' }),
+          bot: bot,
+          user: user
+        }, document.getElementById('BotChatGoesHere'));
+
+    var DirectLineEmulator={
+      emptyActivity:{
+          "activities": [],
+          "watermark": "0"
+      },
+      userActivity:function(activity){
+      //Every time the user sends an activity: 
+          console.log("USER ACTIVITY:")
+          console.log(activity);
+          
+          document.all("lastMessage").innerText=JSON.stringify(activity);
+      },
+      getActivity:function(activity){
+      //The bot polls this function every 1000ms, change activity to the message you want to display
+          console.log("ACTIVITY SENT")
+          return this.emptyActivity;
+      }
+    }
+
+    var messageID=0;
+    function send(){
+      var text=document.all("sendMessage").value;
+      document.all("sendMessage").value="";
+      messageID++;
+      var message={activities:[{
+        "conversation": {
+          "id": "something"
+        },
+        "id": messageID,
+        "from": {
+          "id": "something",
+          "name": "someone",
+          "role": "bot"
+        },
+        "recipient": {
+          "id": "something",
+          "name": "me",
+          "role": "user"
+        },
+        "text": text,
+        "timestamp": (new Date()).toISOString(),
+        "type": "message",
+        "channelId": "asdas"
+      }]};
+      DirectLineEmulator.emptyActivity=message;
+    }
+      </script>
+  </body>
+</html>
