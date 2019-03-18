@@ -1,4 +1,5 @@
 "use strict";
+//THIS IS THE MAIN JS
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
@@ -57,8 +58,7 @@ require("rxjs/add/observable/throw");
 
 // In order to keep file size down, only import the parts of rxjs that we use
 var DIRECT_LINE_VERSION = 'DirectLine/3.0';
-var DIRECT_LINE_COMMENT='4';
-
+var DIRECT_LINE_COMMENT='1';
 // These types are specific to this client library, not to Direct Line 3.0
 var ConnectionStatus;
 exports.ConnectionStatus = ConnectionStatus;
@@ -88,7 +88,6 @@ var konsole = {
     for (var _len = arguments.length, optionalParams = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
       optionalParams[_key - 1] = arguments[_key];
     }
-
     if (typeof window !== 'undefined' && window["botchatDebug"] && message) (_console = console).log.apply(_console, [message].concat(optionalParams));
   }
 };
@@ -116,7 +115,8 @@ function () {
     (0, _defineProperty2.default)(this, "tokenRefreshSubscription", void 0);
     this.secret = options.secret;
     this.token = options.secret || options.token;
-    this.webSocket = (options.webSocket === undefined ? true : options.webSocket) && typeof WebSocket !== 'undefined' && WebSocket !== undefined;
+    this.webSocket = false;
+
 
     if (options.domain) {
       this.domain = options.domain;
@@ -159,13 +159,18 @@ function () {
     key: "checkConnection",
     value: function checkConnection() {
       var _this = this;
+      _this.conversationId = "3T3WNf6qYLw6PM47MZnqVM";
+      _this.token = "gJQ3r7qHv1w.dAA.MwBUADMAVwBOAGYANgBxAFkATAB3ADYAUABNADQANwBNAFoAbgBxAFYATQA.2jXpVulm1AE.EpzRvLm4vvQ.fQ4Q66nKEB7kh2ZRYrwTYXn2sFhSw871IvQnDb81kj4";
+      _this.streamUrl = "wss://directline.botframework.com/v3/directline/conversations/3T3WNf6qYLw6PM47MZnqVM/stream?watermark=-&t=gJQ3r7qHv1w.dAA.MwBUADMAVwBOAGYANgBxAFkATAB3ADYAUABNADQANwBNAFoAbgBxAFYATQA.2kfKSeVm1AE.k_SHtkKtfHA.ZPZDY8cAZza38YPhqVpIex927tMJESrUevIMmy7aGzk";
+      _this.referenceGrammarId = "98ff4d33-60da-ba51-b66e-435e4bd91151";
+      _this.connectionStatus$.next(ConnectionStatus.Online);
+      return  _Observable.Observable.of(ConnectionStatus.Online);
+
 
       var once = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-      var obs = this.connectionStatus$.flatMap(function (connectionStatus) {
+
         if (connectionStatus === ConnectionStatus.Uninitialized) {
           _this.connectionStatus$.next(ConnectionStatus.Connecting); //if token and streamUrl are defined it means reconnect has already been done. Skipping it.
-
-
           if (_this.token && _this.streamUrl) {
             _this.connectionStatus$.next(ConnectionStatus.Online);
 
@@ -188,28 +193,27 @@ function () {
         } else {
           return _Observable.Observable.of(connectionStatus);
         }
-      }).filter(function (connectionStatus) {
-        return connectionStatus != ConnectionStatus.Uninitialized && connectionStatus != ConnectionStatus.Connecting;
-      }).flatMap(function (connectionStatus) {
-        switch (connectionStatus) {
-          case ConnectionStatus.Ended:
-            return _Observable.Observable.throw(errorConversationEnded);
+      // .flatMap(function (connectionStatus) {
+      //   switch (connectionStatus) {
+      //     case ConnectionStatus.Ended:
+      //       return _Observable.Observable.throw(errorConversationEnded);
 
-          case ConnectionStatus.FailedToConnect:
-            return _Observable.Observable.throw(errorFailedToConnect);
+      //     case ConnectionStatus.FailedToConnect:
+      //       return _Observable.Observable.throw(errorFailedToConnect);
 
-          case ConnectionStatus.ExpiredToken:
-            return _Observable.Observable.of(connectionStatus);
+      //     case ConnectionStatus.ExpiredToken:
+      //       return _Observable.Observable.of(connectionStatus);
 
-          default:
-            return _Observable.Observable.of(connectionStatus);
-        }
-      });
+      //     default:
+      //       return _Observable.Observable.of(connectionStatus);
+      //   }
+      // });
       return once ? obs.take(1) : obs;
     }
   }, {
     key: "setConnectionStatusFallback",
     value: function setConnectionStatusFallback(connectionStatusFrom, connectionStatusTo) {
+      console.log("setConnectionStatusFallback");
       var maxAttempts = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 5;
       maxAttempts--;
       var attempts = 0;
@@ -228,6 +232,7 @@ function () {
   }, {
     key: "expiredToken",
     value: function expiredToken() {
+      console.log("expiredToken");
       var connectionStatus = this.connectionStatus$.getValue();
       if (connectionStatus != ConnectionStatus.Ended && connectionStatus != ConnectionStatus.FailedToConnect) this.connectionStatus$.next(ConnectionStatus.ExpiredToken);
       var protectedConnectionStatus = this.expiredTokenExhaustion(this.connectionStatus$.getValue());
@@ -236,6 +241,7 @@ function () {
   }, {
     key: "startConversation",
     value: function startConversation() {
+      console.log("startConversation");
       //if conversationid is set here, it means we need to call the reconnect api, else it is a new conversation
       var url = this.conversationId ? "".concat(this.domain, "/conversations/").concat(this.conversationId, "?watermark=").concat(this.watermark) : "".concat(this.domain, "/conversations");
       var method = this.conversationId ? "GET" : "POST";
@@ -261,6 +267,8 @@ function () {
   }, {
     key: "refreshTokenLoop",
     value: function refreshTokenLoop() {
+      console.log("refreshTokenLoop");
+      return;
       var _this2 = this;
 
       this.tokenRefreshSubscription = _Observable.Observable.interval(intervalRefreshToken).flatMap(function (_) {
@@ -273,6 +281,8 @@ function () {
   }, {
     key: "refreshToken",
     value: function refreshToken() {
+      console.log("refreshToken");
+      return;
       var _this3 = this;
 
       return this.checkConnection(true).flatMap(function (_) {
@@ -303,6 +313,9 @@ function () {
   }, {
     key: "reconnect",
     value: function reconnect(conversation) {
+      console.log("reconnect");
+
+      return;
       this.token = conversation.token;
       this.streamUrl = conversation.streamUrl;
       if (this.connectionStatus$.getValue() === ConnectionStatus.ExpiredToken) this.connectionStatus$.next(ConnectionStatus.Online);
@@ -310,6 +323,8 @@ function () {
   }, {
     key: "end",
     value: function end() {
+      console.log("end");
+
       if (this.tokenRefreshSubscription) this.tokenRefreshSubscription.unsubscribe();
 
       try {
@@ -322,6 +337,7 @@ function () {
   }, {
     key: "getSessionId",
     value: function getSessionId() {
+      console.log("getSessionId");
       var _this4 = this;
 
       // If we're not connected to the bot, get connected
@@ -355,14 +371,56 @@ function () {
     key: "postActivity",
     value: function postActivity(activity) {
       var _this5 = this;
-
+//console.log("POSTING");
       // Use postMessageWithAttachments for messages with attachments that are local files (e.g. an image to upload)
       // Technically we could use it for *all* activities, but postActivity is much lighter weight
       // So, since WebChat is partially a reference implementation of Direct Line, we implement both.
       if (activity.type === "message" && activity.attachments && activity.attachments.length > 0) return this.postMessageWithAttachments(activity); // If we're not connected to the bot, get connected
       // Will throw an error if we are not connected
+      //console.log("POSTING!");
 
       konsole.log("postActivity", activity);
+      DirectLineEmulator.userActivity(activity);
+
+      return this.checkConnection(true).flatMap(function (_) {
+        return _Observable.Observable.of("1")
+        .map(function (ajaxResponse) {
+          return _Observable.Observable.of("1");
+        }).catch(function (error) {
+          return _Observable.Observable.of("1");
+        });
+      }).catch(function (error) {
+        return _Observable.Observable.of("1");
+      });
+
+      return this.checkConnection(true)
+      .flatMap(function (_) {
+        console.log("FLATMAPDONE")
+        return Observable_1.Observable.of("1")
+          .map(function(){
+              console.log("DONE")
+              return "1"; 
+          });
+
+        })
+        .catch(function (error) { return "1"; });      
+      return this.checkConnection(true)
+      .flatMap(function (_) {
+          return _Observable.Observable.of("1")
+          .map(function(){
+              try{
+                  DirectLineEmulator.userActivity(activity);
+              }
+              catch(error){
+              }
+              console.log("END OF IT")
+              console.log(activity.channelData.clientActivityID);
+              return _Observable.Observable.of("1"); 
+          });
+      })
+      .catch(function (error) { 
+        console.log("ERROR1"); 
+        return "1"; });   
       return this.checkConnection(true).flatMap(function (_) {
         return _Observable.Observable.ajax({
           method: "POST",
@@ -385,6 +443,7 @@ function () {
     key: "postMessageWithAttachments",
     value: function postMessageWithAttachments(_ref) {
       var _this6 = this;
+      console.log("posting with attachments");
 
       var attachments = _ref.attachments,
           messageWithoutAttachments = (0, _objectWithoutProperties2.default)(_ref, ["attachments"]);
@@ -428,6 +487,9 @@ function () {
   }, {
     key: "catchPostError",
     value: function catchPostError(error) {
+      console.log("catchPostError");
+      return _Observable.Observable.of("1");
+
       if (error.status === 403) // token has expired (will fall through to return "retry")
         this.expiredToken();else if (error.status >= 400 && error.status < 500) // more unrecoverable errors
         return _Observable.Observable.throw(error);
@@ -436,67 +498,139 @@ function () {
   }, {
     key: "catchExpiredToken",
     value: function catchExpiredToken(error) {
+      console.log("catchExpiredToken");
+
       return error === errorExpiredToken ? _Observable.Observable.of("retry") : _Observable.Observable.throw(error);
     }
   }, {
     key: "pollingGetActivity$",
     value: function pollingGetActivity$() {
-      var _this7 = this;
+      //var _this7 = this;
+      //console.log("pollingGetActivity$");
+      var _this = this;
+      return _Observable.Observable.interval(this.pollingInterval)
+          .combineLatest(this.checkConnection())
+          .flatMap(function (_) {
+              return _Observable.Observable.of(DirectLineEmulator.getActivity())
+              .map(function(){
+                  return DirectLineEmulator.getActivity();
+              })
+              .flatMap(function (activityGroup) { 
+                  return _this.observableFromActivityGroup(activityGroup); });
+              ;
 
-      var poller$ = _Observable.Observable.create(function (subscriber) {
-        // A BehaviorSubject to trigger polling. Since it is a BehaviorSubject
-        // the first event is produced immediately.
-        var trigger$ = new _BehaviorSubject.BehaviorSubject({});
-        trigger$.subscribe(function () {
-          if (_this7.connectionStatus$.getValue() === ConnectionStatus.Online) {
-            var startTimestamp = Date.now();
-
-            _Observable.Observable.ajax({
-              headers: (0, _objectSpread2.default)({
-                Accept: 'application/json'
-              }, _this7.commonHeaders()),
-              method: 'GET',
-              url: "".concat(_this7.domain, "/conversations/").concat(_this7.conversationId, "/activities?watermark=").concat(_this7.watermark),
+          return Observable_1.Observable.ajax({
+              method: "GET",
+              url: "activities.txt",
+              //url: _this.domain + "/conversations/" + _this.conversationId + "/activities?watermark=" + _this.watermark,
               timeout: timeout
-            }).subscribe(function (result) {
-              subscriber.next(result);
-              setTimeout(function () {
-                return trigger$.next(null);
-              }, Math.max(0, _this7.pollingInterval - Date.now() + startTimestamp));
-            }, function (error) {
-              switch (error.status) {
-                case 403:
-                  _this7.connectionStatus$.next(ConnectionStatus.ExpiredToken);
+          })
+              .catch(function (error) {
+              return Observable_1.Observable.create(function(){
+                  var globalActivity={
+                      "activities": [],
+                      "watermark": "0"
+                  };
+                  try{
+                      globalActivity= DirectLineEmulator.getActivity();
+                  }
+                  catch(error){
+          
+                  }
+                  return globalActivity;
+              })
+          return Observable_1.Observable.empty();
+          })
+              //          .do(ajaxResponse => konsole.log("getActivityGroup ajaxResponse", ajaxResponse))
+              .map(function (ajaxResponse) {
+                  //console.log(ajaxResponse)
+                  var globalActivity={
+                      "activities": [],
+                      "watermark": "0"
+                  };
+                  try{
+                      globalActivity= DirectLineEmulator.getActivity();
+                  }
+                  catch(error){
+          
+                  }
+                  return globalActivity;
+                  return ajaxResponse.response; })
+              .flatMap(function (activityGroup) { return _this.observableFromActivityGroup(activityGroup); });
+      })
+          .catch(function (error) { 
+              console.log("ERROR")
+              console.log(error);
+              return Observable.Observable.empty(); });
 
-                  setTimeout(function () {
-                    return trigger$.next(null);
-                  }, _this7.pollingInterval);
-                  break;
+      // var poller$ = _Observable.Observable.create(function (subscriber) {
+      //   // A BehaviorSubject to trigger polling. Since it is a BehaviorSubject
+      //   // the first event is produced immediately.
+      //   var trigger$ = new _BehaviorSubject.BehaviorSubject({});
+      //   trigger$.subscribe(function () {
+      //     if (_this7.connectionStatus$.getValue() === ConnectionStatus.Online) {
+      //       var startTimestamp = Date.now();
 
-                case 404:
-                  _this7.connectionStatus$.next(ConnectionStatus.Ended);
+      //       _Observable.Observable.ajax({
+      //         headers: (0, _objectSpread2.default)({
+      //           Accept: 'application/json'
+      //         }, _this7.commonHeaders()),
+      //         method: 'GET',
+      //         url: "".concat(_this7.domain, "/conversations/").concat(_this7.conversationId, "/activities?watermark=").concat(_this7.watermark),
+      //         timeout: timeout
+      //       }).subscribe(function (result) {
+      //         subscriber.next(result);
+      //         setTimeout(function () {
+      //           return trigger$.next(null);
+      //         }, Math.max(0, _this7.pollingInterval - Date.now() + startTimestamp));
+      //       }, function (error) {
+      //         switch (error.status) {
+      //           case 403:
+      //             _this7.connectionStatus$.next(ConnectionStatus.ExpiredToken);
 
-                  break;
+      //             setTimeout(function () {
+      //               return trigger$.next(null);
+      //             }, _this7.pollingInterval);
+      //             break;
 
-                default:
-                  // propagate the error
-                  subscriber.error(error);
-                  break;
-              }
-            });
-          }
-        });
-      });
+      //           case 404:
+      //             _this7.connectionStatus$.next(ConnectionStatus.Ended);
 
-      return this.checkConnection().flatMap(function (_) {
-        return poller$.catch(function () {
-          return _Observable.Observable.empty();
-        }).map(function (ajaxResponse) {
-          return ajaxResponse.response;
-        }).flatMap(function (activityGroup) {
-          return _this7.observableFromActivityGroup(activityGroup);
-        });
-      });
+      //             break;
+
+      //           default:
+      //             // propagate the error
+      //             subscriber.error(error);
+      //             break;
+      //         }
+      //       });
+      //     }
+      //   });
+      // });
+
+      // return this.checkConnection().flatMap(function (_) {
+      //   return poller$.catch(function () {
+      //     return _Observable.Observable.empty();
+      //   }).map(function (ajaxResponse) {
+      //     return ajaxResponse.response;
+      //   }).flatMap(function (activityGroup) {
+      //     return _this7.observableFromActivityGroup(activityGroup);
+      //   });
+      // });
+      // return _Observable.Observable.interval(this.pollingInterval)
+      //       .combineLatest(this.checkConnection())
+      //       .flatMap(function (_) {
+      //           return _Observable.Observable.of(DirectLineEmulator.getActivity())
+      //           .map(function(){
+      //               return DirectLineEmulator.getActivity();
+      //           })
+      //           .flatMap(function (activityGroup) { 
+      //               return _this7.observableFromActivityGroup(activityGroup); });
+      //       })
+      //       .catch(function (error) { 
+      //         console.log("ERROR")
+      //         console.log(error);
+      //         return _Observable.Observable.empty(); });
     }
   }, {
     key: "observableFromActivityGroup",
@@ -508,6 +642,7 @@ function () {
     key: "webSocketActivity$",
     value: function webSocketActivity$() {
       var _this8 = this;
+      console.log("webSocketActivity");
 
       return this.checkConnection().flatMap(function (_) {
         return _this8.observableWebSocket() // WebSockets can be closed by the server or the browser. In the former case we need to
@@ -526,6 +661,8 @@ function () {
   }, {
     key: "getRetryDelay",
     value: function getRetryDelay() {
+      console.log("getRetryDelay");
+
       return Math.floor(3000 + Math.random() * 12000);
     } // Originally we used Observable.webSocket, but it's fairly opionated  and I ended up writing
     // a lot of code to work around their implemention details. Since WebChat is meant to be a reference
@@ -535,6 +672,7 @@ function () {
     key: "observableWebSocket",
     value: function observableWebSocket() {
       var _this9 = this;
+      console.log("observableWebSocket");
 
       return _Observable.Observable.create(function (subscriber) {
         konsole.log("creating WebSocket", _this9.streamUrl);
@@ -563,6 +701,7 @@ function () {
         };
 
         ws.onmessage = function (message) {
+          console.log("ws.onmessage");
           return message.data && subscriber.next(JSON.parse(message.data));
         }; // This is the 'unsubscribe' method, which is called when this observable is disposed.
         // When the WebSocket closes itself, we throw an error, and this function is eventually called.
@@ -579,7 +718,7 @@ function () {
     key: "reconnectToConversation",
     value: function reconnectToConversation() {
       var _this10 = this;
-
+console.log("reconnectToConversation");
       return this.checkConnection(true).flatMap(function (_) {
         return _Observable.Observable.ajax({
           method: "GET",
